@@ -84,13 +84,20 @@ func drawLine(p0, p1 point, col color.RGBA) {
 
 func interpolate(i0, d0, i1, d1 int) []float64 {
 	values := make([]float64, i1-i0+1)
-
-	a := float64(d1-d0) / float64(i1-i0)
 	d := float64(d0)
 
-	for i := i0; i <= i1; i++ {
-		values[i-i0] = d
-		d = d + a
+	if i1 == i0 {
+		for i := range values {
+			values[i] = d
+		}
+	} else {
+		a := float64(d1-d0) / float64(i1-i0)
+
+		for i := i0; i <= i1; i++ {
+			values[i-i0] = d
+			d = d + a
+		}
 	}
+
 	return values
 }
