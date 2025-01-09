@@ -28,6 +28,7 @@ func main() {
 	drawLine(point{-50, -200}, point{60, 240}, green)
 	drawLine(point{-70, -50}, point{-70, 50}, blue)
 	drawLine(point{-100, 250}, point{100, 250}, black)
+	drawLine(point{150, 150}, point{150, 150}, red)
 	save("lines")
 }
 
@@ -40,7 +41,7 @@ func prepareCanvas() {
 }
 
 func save(name string) {
-	f, err := os.Create(name + ".png")
+	f, err := os.Create("renders/" + name + ".png")
 	if err != nil {
 		panic(err)
 	}
