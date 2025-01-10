@@ -17,6 +17,10 @@ func main() {
 	c.DrawLine(image.Point{150, 150}, image.Point{150, 150}, Red)
 	c.DrawLine(image.Point{100, 100}, image.Point{-100, -100}, Green)
 	save(c, "lines")
+
+	c2 := NewCanvas(width, height)
+	c2.DrawFramedTriangle(image.Point{100, 100}, image.Point{200, 200}, image.Point{150, -150}, Black)
+	save(c2, "triangles")
 }
 
 func save(c Canvas, name string) {
