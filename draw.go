@@ -65,7 +65,7 @@ func (c Canvas) DrawFilledTriange(p0, p1, p2 image.Point, col color.RGBA) {
 	}
 }
 
-func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 int, col color.RGBA) {
+func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 float64, col color.RGBA) {
 	if p1.Y < p0.Y {
 		p1, p0 = p0, p1
 	}
@@ -80,9 +80,9 @@ func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 int, col co
 	x12 := interpolate(p1.Y, p1.X, p2.Y, p2.X)
 	x02 := interpolate(p0.Y, p0.X, p2.Y, p2.X)
 
-	h01 := interpolate(p0.Y, h0, p1.Y, h1)
-	h12 := interpolate(p1.Y, h1, p2.Y, h2)
-	h02 := interpolate(p0.Y, h0, p2.Y, h2)
+	h12 := interpolateFloat(p1.Y, h1, p2.Y, h2)
+	h02 := interpolateFloat(p0.Y, h0, p2.Y, h2)
+	h01 := interpolateFloat(p0.Y, h0, p1.Y, h1)
 
 	x01 = x01[:len(x01)-1]
 	x012 := append(x01, x12...)
@@ -91,7 +91,8 @@ func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 int, col co
 	h012 := append(h01, h12...)
 
 	m := len(x012) / 2
-	var xLeft, xRight, hLeft, hRight []int
+	var xLeft, xRight []int
+	var hLeft, hRight []float64
 	if x02[m] < x012[m] {
 		xLeft = x02
 		xRight = x012
@@ -106,13 +107,14 @@ func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 int, col co
 	for y := p0.Y; y <= p2.Y; y++ {
 		xl := xLeft[y-p0.Y]
 		xr := xRight[y-p0.Y]
-		hSegment := interpolate(xl, hLeft[y-p0.Y], xr, hRight[y-p0.Y])
+		hSegment := interpolateFloat(xl, hLeft[y-p0.Y], xr, hRight[y-p0.Y])
 		for x := xLeft[y-p0.Y]; x <= xRight[y-p0.Y]; x++ {
-			shadedCol := MultColor(col, (float64(hSegment[x-xl]) / 100.0))
+			shadedCol := MultColor(col, hSegment[x-xl])
 			c.PutPixel(image.Point{x, y}, shadedCol)
 		}
 	}
 }
+
 func interpolate(i0, d0, i1, d1 int) []int {
 	values := make([]int, i1-i0+1)
 	d := float64(d0)
@@ -126,6 +128,26 @@ func interpolate(i0, d0, i1, d1 int) []int {
 
 		for i := i0; i <= i1; i++ {
 			values[i-i0] = int(d)
+			d = d + a
+		}
+	}
+
+	return values
+}
+
+func interpolateFloat(i0 int, d0 float64, i1 int, d1 float64) []float64 {
+	values := make([]float64, i1-i0+1)
+	d := float64(d0)
+
+	if i1 == i0 {
+		for i := range values {
+			values[i] = d
+		}
+	} else {
+		a := float64(d1-d0) / float64(i1-i0)
+
+		for i := i0; i <= i1; i++ {
+			values[i-i0] = d
 			d = d + a
 		}
 	}

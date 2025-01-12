@@ -19,7 +19,7 @@ func main() {
 	save(c, "lines")
 
 	c2 := NewCanvas(width, height)
-	c2.DrawShadedTriange(image.Point{-200, -250}, image.Point{200, 50}, image.Point{20, 250}, 30, 10, 100, Green)
+	c2.DrawShadedTriange(image.Point{-200, -250}, image.Point{200, 50}, image.Point{20, 250}, 0.3, 0.1, 1.0, Green)
 	c2.DrawFramedTriangle(image.Point{-200, -250}, image.Point{200, 50}, image.Point{20, 250}, Black)
 	save(c2, "triangles")
 }
