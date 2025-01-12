@@ -16,3 +16,7 @@ func Abs(x int) int {
 	}
 	return x
 }
+
+func MultColor(col color.RGBA, n float64) color.RGBA {
+	return color.RGBA{uint8(float64(col.R) * n), uint8(float64(col.G) * n), uint8(float64(col.B) * n), col.A}
+}
