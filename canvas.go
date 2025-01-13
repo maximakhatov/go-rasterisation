@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math"
 	"os"
 )
 
@@ -30,4 +31,15 @@ func (c Canvas) PutPixel(p image.Point, col color.RGBA) {
 
 func (c Canvas) Save(f *os.File) {
 	png.Encode(f, c.img)
+}
+
+func (c Canvas) viewportToCanvas(x, y, vw, vh float64) image.Point {
+	return image.Point{
+		int(math.Round(x * float64(c.width) / vw)),
+		int(math.Round(y * float64(c.height) / vh)),
+	}
+}
+
+func (c Canvas) ProjectVertex(v Vertex, vp Viewport) image.Point {
+	return c.viewportToCanvas(v.X*vp.D/v.Z, v.Y*vp.D/v.Z, vp.VW, vp.VH)
 }
