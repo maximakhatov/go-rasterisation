@@ -115,6 +115,16 @@ func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 float64, co
 	}
 }
 
+func (c Canvas) RenderObject(vertices []Vertex, triangles []Triangle, viewport Viewport) {
+	projected := make([]image.Point, len(vertices))
+	for i, v := range vertices {
+		projected[i] = c.ProjectVertex(v, viewport)
+	}
+	for _, t := range triangles {
+		c.DrawFramedTriangle(projected[t.v0], projected[t.v1], projected[t.v2], t.color)
+	}
+}
+
 func interpolate(i0, d0, i1, d1 int) []int {
 	values := make([]int, i1-i0+1)
 	d := float64(d0)
