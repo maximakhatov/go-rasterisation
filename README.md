@@ -1,1 +1,1 @@
-Gabriel Gambetta's "Computer graphics from scratch" implementations in golang.
+Gabriel Gambetta's "Computer graphics from scratch" implementations in golang (original is written in preudocode and javascript).
