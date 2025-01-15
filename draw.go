@@ -125,6 +125,25 @@ func (c Canvas) RenderObject(vertices []Vertex, triangles []Triangle, viewport V
 	}
 }
 
+func (c Canvas) RenderInstance(inst Instance, viewport Viewport) {
+	projected := make([]image.Point, len(inst.Vertices))
+	vshifteds := make([]Vertex, len(inst.Vertices))
+	for i, v := range inst.Vertices {
+		vShifted := Vertex{v.X + inst.Position.X, v.Y + inst.Position.Y, v.Z + inst.Position.Z}
+		vshifteds[i] = vShifted
+		projected[i] = c.ProjectVertex(vShifted, viewport)
+	}
+	for _, t := range inst.Triangles {
+		c.DrawFramedTriangle(projected[t.v0], projected[t.v1], projected[t.v2], t.color)
+	}
+}
+
+func (c Canvas) RenderScene(insts []Instance, viewport Viewport) {
+	for _, inst := range insts {
+		c.RenderInstance(inst, viewport)
+	}
+}
+
 func interpolate(i0, d0, i1, d1 int) []int {
 	values := make([]int, i1-i0+1)
 	d := float64(d0)

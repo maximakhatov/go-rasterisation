@@ -8,11 +8,38 @@ import (
 const width = 600
 const height = 600
 
+var baseViewport = Viewport{1, 1, 1}
+var cube = Model{[]Vertex{
+	{1, 1, 1},
+	{-1, 1, 1},
+	{-1, -1, 1},
+	{1, -1, 1},
+	{1, 1, -1},
+	{-1, 1, -1},
+	{-1, -1, -1},
+	{1, -1, -1},
+},
+	[]Triangle{
+		{0, 1, 2, Red},
+		{0, 2, 3, Red},
+		{4, 0, 3, Green},
+		{4, 3, 7, Green},
+		{5, 4, 7, Blue},
+		{5, 7, 6, Blue},
+		{1, 5, 6, Yellow},
+		{1, 6, 2, Yellow},
+		{4, 5, 1, Magenta},
+		{4, 1, 0, Magenta},
+		{2, 6, 7, Cyan},
+		{2, 7, 3, Cyan},
+	}}
+
 func main() {
 	drawLines()
 	drawTriangles()
 	drawCubeByLines()
 	drawCube()
+	drawCubesScene()
 }
 
 func save(c Canvas, name string) {
@@ -43,8 +70,6 @@ func drawTriangles() {
 }
 
 func drawCubeByLines() {
-	viewport := Viewport{1, 1, 1}
-
 	canvasCube := NewCanvas(width, height)
 	vAf := Vertex{-2, -0.5, 5}
 	vBf := Vertex{-2, 0.5, 5}
@@ -54,53 +79,42 @@ func drawCubeByLines() {
 	vBb := Vertex{-2, 0.5, 6}
 	vCb := Vertex{-1, 0.5, 6}
 	vDb := Vertex{-1, -0.5, 6}
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf, viewport), canvasCube.ProjectVertex(vBf, viewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf, viewport), canvasCube.ProjectVertex(vCf, viewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf, viewport), canvasCube.ProjectVertex(vDf, viewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf, viewport), canvasCube.ProjectVertex(vAf, viewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vAb, viewport), canvasCube.ProjectVertex(vBb, viewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vBb, viewport), canvasCube.ProjectVertex(vCb, viewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vCb, viewport), canvasCube.ProjectVertex(vDb, viewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vDb, viewport), canvasCube.ProjectVertex(vAb, viewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf, viewport), canvasCube.ProjectVertex(vAb, viewport), Green)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf, viewport), canvasCube.ProjectVertex(vBb, viewport), Green)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf, viewport), canvasCube.ProjectVertex(vCb, viewport), Green)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf, viewport), canvasCube.ProjectVertex(vDb, viewport), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf, baseViewport), canvasCube.ProjectVertex(vBf, baseViewport), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf, baseViewport), canvasCube.ProjectVertex(vCf, baseViewport), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf, baseViewport), canvasCube.ProjectVertex(vDf, baseViewport), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf, baseViewport), canvasCube.ProjectVertex(vAf, baseViewport), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vAb, baseViewport), canvasCube.ProjectVertex(vBb, baseViewport), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vBb, baseViewport), canvasCube.ProjectVertex(vCb, baseViewport), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vCb, baseViewport), canvasCube.ProjectVertex(vDb, baseViewport), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vDb, baseViewport), canvasCube.ProjectVertex(vAb, baseViewport), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf, baseViewport), canvasCube.ProjectVertex(vAb, baseViewport), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf, baseViewport), canvasCube.ProjectVertex(vBb, baseViewport), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf, baseViewport), canvasCube.ProjectVertex(vCb, baseViewport), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf, baseViewport), canvasCube.ProjectVertex(vDb, baseViewport), Green)
 	save(canvasCube, "cube_by_lines")
 }
 
 func drawCube() {
-	viewport := Viewport{1, 1, 1}
-	vertices := []Vertex{
-		Vertex{1, 1, 1},
-		Vertex{-1, 1, 1},
-		Vertex{-1, -1, 1},
-		Vertex{1, -1, 1},
-		Vertex{1, 1, -1},
-		Vertex{-1, 1, -1},
-		Vertex{-1, -1, -1},
-		Vertex{1, -1, -1},
-	}
-	triangles := []Triangle{
-		Triangle{0, 1, 2, Red},
-		Triangle{0, 2, 3, Red},
-		Triangle{4, 0, 3, Green},
-		Triangle{4, 3, 7, Green},
-		Triangle{5, 4, 7, Blue},
-		Triangle{5, 7, 6, Blue},
-		Triangle{1, 5, 6, Yellow},
-		Triangle{1, 6, 2, Yellow},
-		Triangle{4, 5, 1, Magenta},
-		Triangle{4, 1, 0, Magenta},
-		Triangle{2, 6, 7, Cyan},
-		Triangle{2, 7, 3, Cyan},
-	}
+	vertices := cube.Vertices
+	triangles := cube.Triangles
 
+	newVertices := make([]Vertex, len(vertices))
 	for i := range vertices {
-		vertices[i] = Vertex{vertices[i].X - 1.5, vertices[i].Y, vertices[i].Z + 7}
+		newVertices[i] = Vertex{vertices[i].X - 1.5, vertices[i].Y, vertices[i].Z + 7}
 	}
 
 	canvasCube := NewCanvas(width, height)
-	canvasCube.RenderObject(vertices, triangles, viewport)
+	canvasCube.RenderObject(newVertices, triangles, baseViewport)
 	save(canvasCube, "cube")
+}
+
+func drawCubesScene() {
+	insts := []Instance{
+		{cube, Vertex{-1.5, 0, 7}},
+		{cube, Vertex{1.25, 2, 7.5}},
+	}
+
+	canvasCubes := NewCanvas(width, height)
+	canvasCubes.RenderScene(insts, baseViewport)
+	save(canvasCubes, "cubes_scene")
 }
