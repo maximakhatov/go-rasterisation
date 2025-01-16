@@ -125,22 +125,24 @@ func (c Canvas) RenderObject(vertices []Vertex, triangles []Triangle, viewport V
 	}
 }
 
-func (c Canvas) RenderInstance(inst Instance, viewport Viewport) {
+func (c Canvas) RenderInstance(inst Instance, viewport Viewport, transform Mat4x4) {
 	projected := make([]image.Point, len(inst.Vertices))
-	vshifteds := make([]Vertex, len(inst.Vertices))
 	for i, v := range inst.Vertices {
-		vShifted := Vertex{v.X + inst.Position.X, v.Y + inst.Position.Y, v.Z + inst.Position.Z}
-		vshifteds[i] = vShifted
-		projected[i] = c.ProjectVertex(vShifted, viewport)
+		v4 := Vertex4{v, 1}
+		projected[i] = c.ProjectVertex(transform.MultiplyMV(v4).Vertex, viewport)
 	}
 	for _, t := range inst.Triangles {
 		c.DrawFramedTriangle(projected[t.v0], projected[t.v1], projected[t.v2], t.color)
 	}
 }
 
-func (c Canvas) RenderScene(insts []Instance, viewport Viewport) {
+func (c Canvas) RenderScene(insts []Instance, viewport Viewport, cam Camera) {
+	cameraTranslation := MakeTranslationMatrix(Vertex{-cam.Position.X, -cam.Position.Y, -cam.Position.Z})
+	cameraMatrix := cam.Orientation.Transpose().MultiplyMM4(cameraTranslation)
+
 	for _, inst := range insts {
-		c.RenderInstance(inst, viewport)
+		transform := cameraMatrix.MultiplyMM4(inst.Transform())
+		c.RenderInstance(inst, viewport, transform)
 	}
 }
 

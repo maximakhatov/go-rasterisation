@@ -110,11 +110,12 @@ func drawCube() {
 
 func drawCubesScene() {
 	insts := []Instance{
-		{cube, Vertex{-1.5, 0, 7}},
-		{cube, Vertex{1.25, 2, 7.5}},
+		{cube, Vertex{-1.5, 0, 7}, Identity4x4, 0.75},
+		{cube, Vertex{1.25, 2, 7.5}, MakeOYRotationMatrix(195), 1},
 	}
+	camera := Camera{Vertex{-3, 1, 2}, MakeOYRotationMatrix(-30)}
 
 	canvasCubes := NewCanvas(width, height)
-	canvasCubes.RenderScene(insts, baseViewport)
+	canvasCubes.RenderScene(insts, baseViewport, camera)
 	save(canvasCubes, "cubes_scene")
 }
