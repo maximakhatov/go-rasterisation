@@ -115,34 +115,34 @@ func (c Canvas) DrawShadedTriange(p0, p1, p2 image.Point, h0, h1, h2 float64, co
 	}
 }
 
-func (c Canvas) RenderObject(vertices []Vertex, triangles []Triangle, viewport Viewport) {
+func (c Canvas) RenderObject(vertices []Vertex, triangles []Triangle) {
 	projected := make([]image.Point, len(vertices))
 	for i, v := range vertices {
-		projected[i] = c.ProjectVertex(v, viewport)
+		projected[i] = c.ProjectVertex(v)
 	}
 	for _, t := range triangles {
 		c.DrawFramedTriangle(projected[t.v0], projected[t.v1], projected[t.v2], t.color)
 	}
 }
 
-func (c Canvas) RenderInstance(inst Instance, viewport Viewport, transform Mat4x4) {
+func (c Canvas) RenderInstance(inst Instance, transform Mat4x4) {
 	projected := make([]image.Point, len(inst.Vertices))
 	for i, v := range inst.Vertices {
 		v4 := Vertex4{v, 1}
-		projected[i] = c.ProjectVertex(transform.MultiplyMV(v4).Vertex, viewport)
+		projected[i] = c.ProjectVertex(transform.MultiplyMV(v4).Vertex)
 	}
 	for _, t := range inst.Triangles {
 		c.DrawFramedTriangle(projected[t.v0], projected[t.v1], projected[t.v2], t.color)
 	}
 }
 
-func (c Canvas) RenderScene(insts []Instance, viewport Viewport, cam Camera) {
+func (c Canvas) RenderScene(insts []Instance, cam Camera) {
 	cameraTranslation := MakeTranslationMatrix(Vertex{-cam.Position.X, -cam.Position.Y, -cam.Position.Z})
 	cameraMatrix := cam.Orientation.Transpose().MultiplyMM4(cameraTranslation)
 
 	for _, inst := range insts {
 		transform := cameraMatrix.MultiplyMM4(inst.Transform())
-		c.RenderInstance(inst, viewport, transform)
+		c.RenderInstance(inst, transform)
 	}
 }
 

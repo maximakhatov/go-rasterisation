@@ -8,7 +8,7 @@ import (
 const width = 600
 const height = 600
 
-var baseViewport = Viewport{1, 1, 1}
+var viewport = Viewport{1, 1, 1}
 var cube = Model{[]Vertex{
 	{1, 1, 1},
 	{-1, 1, 1},
@@ -79,18 +79,18 @@ func drawCubeByLines() {
 	vBb := Vertex{-2, 0.5, 6}
 	vCb := Vertex{-1, 0.5, 6}
 	vDb := Vertex{-1, -0.5, 6}
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf, baseViewport), canvasCube.ProjectVertex(vBf, baseViewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf, baseViewport), canvasCube.ProjectVertex(vCf, baseViewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf, baseViewport), canvasCube.ProjectVertex(vDf, baseViewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf, baseViewport), canvasCube.ProjectVertex(vAf, baseViewport), Blue)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vAb, baseViewport), canvasCube.ProjectVertex(vBb, baseViewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vBb, baseViewport), canvasCube.ProjectVertex(vCb, baseViewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vCb, baseViewport), canvasCube.ProjectVertex(vDb, baseViewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vDb, baseViewport), canvasCube.ProjectVertex(vAb, baseViewport), Red)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf, baseViewport), canvasCube.ProjectVertex(vAb, baseViewport), Green)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf, baseViewport), canvasCube.ProjectVertex(vBb, baseViewport), Green)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf, baseViewport), canvasCube.ProjectVertex(vCb, baseViewport), Green)
-	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf, baseViewport), canvasCube.ProjectVertex(vDb, baseViewport), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf), canvasCube.ProjectVertex(vBf), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf), canvasCube.ProjectVertex(vCf), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf), canvasCube.ProjectVertex(vDf), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf), canvasCube.ProjectVertex(vAf), Blue)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vAb), canvasCube.ProjectVertex(vBb), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vBb), canvasCube.ProjectVertex(vCb), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vCb), canvasCube.ProjectVertex(vDb), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vDb), canvasCube.ProjectVertex(vAb), Red)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vAf), canvasCube.ProjectVertex(vAb), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vBf), canvasCube.ProjectVertex(vBb), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vCf), canvasCube.ProjectVertex(vCb), Green)
+	canvasCube.DrawLine(canvasCube.ProjectVertex(vDf), canvasCube.ProjectVertex(vDb), Green)
 	save(canvasCube, "cube_by_lines")
 }
 
@@ -104,7 +104,7 @@ func drawCube() {
 	}
 
 	canvasCube := NewCanvas(width, height)
-	canvasCube.RenderObject(newVertices, triangles, baseViewport)
+	canvasCube.RenderObject(newVertices, triangles)
 	save(canvasCube, "cube")
 }
 
@@ -116,6 +116,6 @@ func drawCubesScene() {
 	camera := Camera{Vertex{-3, 1, 2}, MakeOYRotationMatrix(-30)}
 
 	canvasCubes := NewCanvas(width, height)
-	canvasCubes.RenderScene(insts, baseViewport, camera)
+	canvasCubes.RenderScene(insts, camera)
 	save(canvasCubes, "cubes_scene")
 }

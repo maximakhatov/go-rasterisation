@@ -40,6 +40,6 @@ func (c Canvas) viewportToCanvas(x, y, vw, vh float64) image.Point {
 	}
 }
 
-func (c Canvas) ProjectVertex(v Vertex, vp Viewport) image.Point {
-	return c.viewportToCanvas(v.X*vp.D/v.Z, v.Y*vp.D/v.Z, vp.VW, vp.VH)
+func (c Canvas) ProjectVertex(v Vertex) image.Point {
+	return c.viewportToCanvas(v.X*viewport.D/v.Z, v.Y*viewport.D/v.Z, viewport.VW, viewport.VH)
 }
